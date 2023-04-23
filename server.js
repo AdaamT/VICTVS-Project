@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const data = require("./data");
+const data = require("./data/TechTestJson.json");
 const app = express();
 
 app.use(bodyParser.json());
@@ -30,13 +30,29 @@ app.get("/api/exams/filter", (req, res) => {
   res.json(filteredExams);
 });
 
-// Endpoint to filter exams by location
+// Endpoint to filter exams by date, candidate, or location
 app.get("/api/exams/filter", (req, res) => {
-  const location = req.query.location;
-  if (!location) {
-    return res.status(400).send("Location parameter is required");
+  let filteredExams = data.exams;
+
+  // Filter by date if date parameter is present
+  if (req.query.date) {
+    filteredExams = filteredExams.filter((e) => e.Date === req.query.date);
   }
-  const filteredExams = exams.filter((e) => e.LocationName === location);
+
+  // Filter by candidate if candidate parameter is present
+  if (req.query.candidate) {
+    filteredExams = filteredExams.filter(
+      (e) => e.CandidateName === req.query.candidate
+    );
+  }
+
+  // Filter by location if location parameter is present
+  if (req.query.location) {
+    filteredExams = filteredExams.filter(
+      (e) => e.LocationName === req.query.location
+    );
+  }
+
   res.json(filteredExams);
 });
 
