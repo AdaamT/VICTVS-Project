@@ -6,50 +6,40 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get("/exams", (req, res) => {
-  // Code to retrieve all exams
-  res.json({ exams: allExams });
+// Endpoint to get all exams
+app.get("/api/exams", (req, res) => {
+  res.json(exams);
 });
 
-app.get("/exams/:id", (req, res) => {
-  // Code to retrieve a specific exam by ID
-  res.json({ exam: foundExam });
-});
-
-// Endpoint to filter exams by date, candidate or location
-app.get("/exams", (req, res) => {
-  const { date, candidate, location } = req.query;
-  let filteredExams = data.getAllExams();
-
-  if (date) {
-    filteredExams = data.filterExamsByDate(date);
-  }
-
-  if (candidate) {
-    filteredExams = data.filterExamsByCandidate(candidate);
-  }
-
-  if (location) {
-    filteredExams = data.filterExamsByLocation(location);
-  }
-
-  res.json({ exams: filteredExams });
-});
-
-app.get("/exams/:id", (req, res) => {
-  const { id } = req.params;
-  const exam = data.getExamById(id);
-
+// Endpoint to get an exam by ID
+app.get("/api/exams/:id", (req, res) => {
+  const exam = exams.find((e) => e.id === parseInt(req.params.id));
   if (!exam) {
-    return res.status(404).json({ message: "Exam not found" });
+    return res.status(404).send("Exam not found");
   }
+  res.json(exam);
+});
 
-  res.json({ exam });
+// Endpoint to filter exams by candidate
+app.get("/api/exams/filter", (req, res) => {
+  const candidate = req.query.candidate;
+  if (!candidate) {
+    return res.status(400).send("Candidate parameter is required");
+  }
+  const filteredExams = exams.filter((e) => e.CandidateName === candidate);
+  res.json(filteredExams);
+});
+
+// Endpoint to filter exams by location
+app.get("/api/exams/filter", (req, res) => {
+  const location = req.query.location;
+  if (!location) {
+    return res.status(400).send("Location parameter is required");
+  }
+  const filteredExams = exams.filter((e) => e.LocationName === location);
+  res.json(filteredExams);
 });
 
 // Start the server
-const PORT = 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Listening on port ${port}...`));
