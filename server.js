@@ -8,12 +8,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Endpoint to get all exams
 app.get("/api/exams", (req, res) => {
-  res.json(exams);
+  console.log(data);
+  res.json(data);
 });
 
 // Endpoint to get an exam by ID
 app.get("/api/exams/:id", (req, res) => {
-  const exam = exams.find((e) => e.id === parseInt(req.params.id));
+  const exam = data.find((e) => e.id === parseInt(req.params.id));
   if (!exam) {
     return res.status(404).send("Exam not found");
   }
