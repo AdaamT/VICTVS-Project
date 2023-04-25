@@ -8,17 +8,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Endpoint to get all exams
 app.get("/api/exams", (req, res) => {
-  console.log(data);
+  //   console.log(data);
   res.json(data);
-});
-
-// Endpoint to get an exam by ID
-app.get("/api/exams/:id", (req, res) => {
-  const exam = data.find((e) => e.id === parseInt(req.params.id));
-  if (!exam) {
-    return res.status(404).send("Exam not found");
-  }
-  res.json(exam);
 });
 
 // Endpoint to filter exams by candidate
@@ -27,13 +18,21 @@ app.get("/api/exams/filter", (req, res) => {
   if (!candidate) {
     return res.status(400).send("Candidate parameter is required");
   }
-  const filteredExams = exams.filter((e) => e.CandidateName === candidate);
+
+  const filteredExams = data.filter(
+    (exam) => exam.CandidateName.toLowerCase() === candidate.toLowerCase()
+  );
+
+  if (filteredExams.length === 0) {
+    return res.status(404).send(`No exams found for candidate ${candidate}`);
+  }
+
   res.json(filteredExams);
 });
 
 // Endpoint to filter exams by date, candidate, or location
-app.get("/api/exams/filter", (req, res) => {
-  let filteredExams = data.exams;
+app.get("/api/exams/filter2", (req, res) => {
+  let filteredExams = data;
 
   // Filter by date if date parameter is present
   if (req.query.date) {
@@ -55,6 +54,15 @@ app.get("/api/exams/filter", (req, res) => {
   }
 
   res.json(filteredExams);
+});
+
+// Endpoint to get an exam by ID
+app.get("/api/exams/:id", (req, res) => {
+  const exam = data.find((e) => e.id === parseInt(req.params.id));
+  if (!exam) {
+    return res.status(404).send("Exam not found");
+  }
+  res.json(exam);
 });
 
 // Start the server
