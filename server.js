@@ -38,7 +38,11 @@ app.get("/api/exams/filter2", (req, res) => {
 
   // Filter by date if date parameter is present
   if (req.query.date) {
-    filteredExams = filteredExams.filter((e) => e.Date === req.query.date);
+    const desiredDate = new Date(req.query.date);
+    filteredExams = filteredExams.filter((e) => {
+      const examDate = new Date(e.Date);
+      return examDate.toDateString() === desiredDate.toDateString();
+    });
   }
 
   // Filter by candidate if candidate parameter is present
