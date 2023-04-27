@@ -16,7 +16,7 @@ app.get("/api/exams", (req, res) => {
 app.get("/api/exams/filter", (req, res) => {
   const candidate = req.query.candidate;
   if (!candidate) {
-    return res.status(400).send("Candidate parameter is required");
+    return res.status(400).send("Error 400 - Candidate parameter is required");
   }
 
   const filteredExams = data.filter(
@@ -24,7 +24,9 @@ app.get("/api/exams/filter", (req, res) => {
   );
 
   if (filteredExams.length === 0) {
-    return res.status(404).send(`No exams found for candidate ${candidate}`);
+    return res
+      .status(404)
+      .send(`Error 404 - No exams found for candidate ${candidate}`);
   }
 
   res.json(filteredExams);
