@@ -60,7 +60,7 @@ app.get("/api/exams/filter2", (req, res) => {
 app.get("/api/exams/:id", (req, res) => {
   const exam = data.find((e) => e.id === parseInt(req.params.id));
   if (!exam) {
-    return res.status(404).send("Exam not found");
+    return res.status(404).send("Error 404 - Exam not found");
   }
   res.json(exam);
 });
