@@ -32,7 +32,7 @@ app.get("/api/exams/filter", (req, res) => {
   res.json(filteredExams);
 });
 
-// Endpoint to filter exams by date, candidate, or location
+// Endpoint to filter exams by date, or location
 app.get("/api/exams/filter2", (req, res) => {
   let filteredExams = data;
 
@@ -43,20 +43,27 @@ app.get("/api/exams/filter2", (req, res) => {
       const examDate = new Date(e.Date);
       return examDate.toDateString() === desiredDate.toDateString();
     });
-  }
-
-  // Filter by candidate if candidate parameter is present
-  if (req.query.candidate) {
-    filteredExams = filteredExams.filter(
-      (e) => e.CandidateName === req.query.candidate
-    );
+    if (filteredExams.length === 0) {
+      return res
+        .status(404)
+        .send(`Error 404 - No exams available for selected ${desiredDate}`);
+    }
   }
 
   // Filter by location if location parameter is present
   if (req.query.location) {
+    const desiredLocation = req.query.location;
     filteredExams = filteredExams.filter(
-      (e) => e.LocationName === req.query.location
+      (e) => e.LocationName === desiredLocation
     );
+
+    if (filteredExams.length === 0) {
+      return res
+        .status(404)
+        .send(
+          `Error 404 - No exams available for selected location: ${desiredLocation}`
+        );
+    }
   }
 
   res.json(filteredExams);
